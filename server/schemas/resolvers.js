@@ -4,29 +4,27 @@ const { signToken } = require("../utils/auth");
 
 const resolvers = {
   Query: {
-    async getSingleUser(parent, { user = null, params }) {
-      const foundUser = await User.findOne({
-        $or: [
-          { _id: user ? user._id : params.id },
-          { username: params.username },
-        ],
-      });
-
-      return foundUser;
+    me: async (parent, args, context) => {
+        if(context.user) {
+            const userData = await User.findOne({_id: context.user._id})
+                .select('-__v -password')
+                return userData;
+        }
+        throw new AuthenticationError("Not Logged In");
     },
   },
   Muation: {
-    async createUser(parent, { body }) {
-      const user = await User.create(body);
+    createUser: async (parent, args) => {
+      const user = await User.create(args);
       const token = signToken(user);
       return { token, user };
     },
-    async login(parent, { body }) {
+    login: async (parent, { email, password}) => {
       const user = await User.findOne({
         $or: [{ username: body.username }, { email: body.email }],
       });
 
-      const correctPw = await user.isCorrectPassword(body.password);
+      const correctPw = await user.isCorrectPassword(password);
 
       const token = signToken(user);
       return { token, user };
