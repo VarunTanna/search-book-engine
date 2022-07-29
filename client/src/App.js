@@ -5,7 +5,6 @@ import SavedBooks from "./pages/SavedBooks";
 import Navbar from "./components/Navbar";
 import { ApolloProvider } from "@apollo/react-hooks";
 import ApolloClient from "apollo-boost";
-import Switch from "react-bootstrap/esm/Switch";
 
 const client = new ApolloClient({
   request: (operation) => {
