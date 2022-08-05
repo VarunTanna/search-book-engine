@@ -14,7 +14,7 @@ const resolvers = {
       throw new AuthenticationError("Not Logged In");
     },
   },
-  Muation: {
+  Mutation: {
     createUser: async (parent, args) => {
       const user = await User.create(args);
       const token = signToken(user);
